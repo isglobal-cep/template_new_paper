@@ -9,4 +9,5 @@ This repository serves as a template for each new paper/study. It is also suppos
 
 ## Things to do
 There are a few things that should/can be done for each paper:
-* For each new paper, create a new project at OSF and link it to the repository.
+* For each new paper, create a new project at OSF and link it to the repository;
+* Add a DOI to the repository with Zenodo.
