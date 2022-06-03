@@ -4,3 +4,7 @@ This repository serves as a template for each new paper/study. It is also suppos
 1. Add this repository in the directory containing all the submodules (one for each paper) in `main` with `git submodule add template_new_paper`;
 2. Commit the changes with `git commit -m "Added submodule for paper X"`;
 3. Push the newly added submodule with `git push`.
+
+## Things to do
+There are a few things that should/can be done for each paper:
+* For each new paper, create a new project at OSF and link it to the repository.
