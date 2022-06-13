@@ -4,18 +4,18 @@ module load utils/rclone
 
 # Store variables and paths of interest
 path_to_dags_local="../DAGs/"
-path_to_dags_remote="gdrive:path"
+path_to_dags_remote="gdrive:path" # <-- MODIFY
 
 path_to_paper_local="../output/paper/manuscript.pdf"
-path_to_paper_remote="gdrive:path"
-
-path_to_figures_local="../results/figures/"
-path_to_figures_remote="gdrive:path"
+path_to_paper_remote="gdrive:path" # <-- MODIFY
 
 # TODO: posters, presentations #
 
+path_to_figures_local="../results/figures/"
+path_to_figures_remote="gdrive:path" # <-- MODIFY
+
 path_to_tables_local="../results/tables/"
-path_to_tables_remote="gdrive:path"
+path_to_tables_remote="gdrive:path" # <-- MODIFY
 
 # Specify which directories/files should be kept in sync with Google Drive
 ## DAGs
