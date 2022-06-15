@@ -1,6 +1,6 @@
 ## Script to keep in sync local results with Google Drive
 
-module load utils/rclone
+module load tools/rclone
 
 # Store variables and paths of interest
 path_to_dags_local="../DAGs/"
