@@ -13,7 +13,7 @@ library(tidyverse)
 ```
 
 
-\textcolor{red}{Most of the following was **copy-pasted** from published papers.}
+\textcolor{red}{Most of the following was **copy-pasted** from published papers. Some of the Sections must be filled depending on the chosen causal framework.}
 
 
 <!-- ####################################################################### -->
@@ -74,8 +74,6 @@ In the following sections, we present the simplified DAG specific to each resear
 
 ## Research question 1:...
 
-This is the primary analysis of the paper.
-
 ```{r echo=FALSE, fig.cap="Simplified DAG for research question 1."}
 sdag1 <- ggdag::dagify(X_ti ~ W_t, 
                        Y ~ W_t + X_ti, 
@@ -97,91 +95,41 @@ ggpubr::ggarrange(sdag1, ...,
 For the causal parameter $\phi$, which involves a summary measure of the distribution of counterfactuals, 
 to be identified in terms of the observed data distribution, several assumptions would be required:
 
-* **No unmeasured confounding**: There are no unmeasured common causes of the exposure and the subsequent outcome, which we can formalize as $Y^d \perp \!\!\! \perp A|W$. In our context, this assumption would be violated if, for example, an unmeasured variable influenced both the exposure levels and the clinical outcome. We cannot guarantee that this assumption holds, and therefore limit our interpretations to statistical associations rather than causal effects.
-* **Positivity**: If $(a, w)$ is within the support of $A, W$, then $(d(a,c), w)$ for additive shifts and $(d(a,k), w)$ for multiplicative shifts must also be within the support of $A,W$. In practice, this means that for any given time index and set of adjustment covariates, there is a positive probability of finding a subject with the same covariate values and a exposure level matching the shifted value. We attempted to improve plausibility of this assumption by considering small shifts, while recognizing that this approach makes our causal effect data-adaptive.
+* **No unmeasured confounding**: There are no unmeasured common causes of the exposure and the subsequent outcome. In our context, this assumption would be violated if, for example, an unmeasured variable influenced both the exposure levels and the outcome. We cannot guarantee that this assumption holds, and therefore limit our interpretations to statistical associations rather than causal effects.
+* **Positivity**:....
 * **Independence** of subjects. This assumption also implies **no interference**: the exposure level $a$ for a given subject does not affect the outcomes of the other subjects.
-* **Consistency**: If $A = a$ for any subject, then $Y(a) = Y$, and hence the full observed set of outcomes when $A^d = A$ is simply $Y(A^d) = Y$. This means that the counterfactual outcome for a subject with its observed exposure level is the observed outcome.
+* **Consistency**: If $A = a$ for any subject, then $Y(a) = Y$. This means that the counterfactual outcome for a subject with its observed exposure level is the observed outcome.
 * **Time-ordering**: The confounders $W$ precede the exposure $A$, which also precedes the outcome $Y$.
 
-If these identifiability assumptions held, we could specify and focus our estimation efforts on a statistical estimand that equals the wished-for causal effect. In the (likely) case that they are not satisfied, we could still specify and focus our estimation efforts on a statistical estimand that is as close as possible to the causal parameter. Factoring the joint distribution of the observed data $\mathbb{P}_0$ into $\mathbb{P}_0 (O) = \mathbb{P}_0(Y|A,W) \mathbb{P}_0(A|W) \mathbb{P}_0(W)$, it can be shown that the statistical estimand corresponding to expected counterfactual outcome under shift $d$, $\mathbb{E}[Y^d]$, is given by
+If these identifiability assumptions held, we could specify and focus our estimation efforts on a statistical estimand that equals the wished-for causal effect. In the (likely) case that they are not satisfied, we could still specify and focus our estimation efforts on a statistical estimand that is as close as possible to the causal parameter. Factoring the joint distribution of the observed data $\mathbb{P}_0$ into $\mathbb{P}_0 (O) = \mathbb{P}_0(Y|A,W) \mathbb{P}_0(A|W) \mathbb{P}_0(W)$, it can be shown that the statistical estimand corresponding to expected counterfactual outcome..., is given by
 
 $$
-\psi_0 (A^d) = \int \mathbb{E} (Y | A=a^d, W=w) dF_{A,W}(a, w), 
+..., 
 $$
 
-with $dF_{A,W}(a, w)$ as the joint density of received exposures $A$ and covariate levels $W$ being integrated over. We refer to $\psi_0 (A^d)$ as the *shift parameter*. Under no shift, the expected outcome was identified as $\psi_0 (A^d) = \mathbb{E} (Y)$. Therefore, our statistical estimand of interest, corresponding to the expected difference in the outcome under shifted and observed exposure levels, was
+Therefore, our statistical estimand of interest was
 
 $$
-\psi_0^{\Delta} = \psi_0 (A^d) - \psi_0 (A) = \int \mathbb{E} (Y | A=a^d, W=w)dF_{A,W} (a,w) - \mathbb{E} (Y).
+....
 $$
 
 <!-- ####################################################################### -->
 # Step 4: Estimation from data and statistical inference
 <!-- ####################################################################### -->
 
-To estimate the expected outcome under the observed exposure $\psi_0 (A) = \mathbb{E} (Y)$, we used the empirical mean outcome. For estimating the shift parameter $\psi_0 (A^d)$, we used TMLE, which typically uses the factorization of the observed data distribution into an outcome regression $\bar{Q}(A,W) = \mathbb{E} (Y|A,W)$ and an intervention mechanism $g(A|W) = P(A|W)$. Then, an initial estimate of the outcome regression is updated by a fluctuation that is a function of the intervention mechanism. In this study, we used the implementation of [@diaz2021nonparametric]. Here, we summarize the algorithm for the shift parameter $\psi_0 (A^d)$. We first define the density ratio
-
-$$
-r(a,w) = \frac{g^d(a|w)}{g(a|w)}.
-$$
-
-Estimation of the conditional density $g$ is done by recasting it as a classification problem. It can be shown that
-
-$$
-r(a,w) = \frac{P(\Lambda=1|a,w)}{1-P(\Lambda=1|a,w)},
-$$
-
-with $\Lambda$ indicating whether each subject received the natural or shifted value of treatment. We refer to $P(\Lambda=1|a,w)$ as $\tilde{\lambda}$. To implement estimation of $\bar{\lambda}$ and $\bar{Q}$ flexibly, we used the ensemble machine learning algorithm Super Learner. In the following, we present the steps necessary to estimate $\psi_0 (A^d)$ and the associational parameter $\psi_0^{\Delta}$. We note that our bounded continuous outcome was scaled to $[0,1]$.
-
-1. Define and calculate the density ratio under the specified shift $\hat{r} (a_i, w_i)$ for each subject $i = 1, \dots, n$ from $\tilde{\lambda}$ estimated via SL.
-1. Generate initial conditional expectations for each subject, denoted $\bar{Q}(A,W)$.
-1. Fit the following logistic regression on the observed (scaled) $Y$ values, using the logit of the initial estimates as an offset
-$$
-\text{logit} (\bar{Q}^*(A,W)) = \text{logit} (\bar{Q}(A,W)) + \epsilon
-$$
-with weights $\hat{r} (a_i, w_i)$, calculating the estimated intercept $\hat{\epsilon}$, where $\bar{Q}^*(A,W)$ is now a targeted estimate of the conditional mean outcome.
-1. Use the resulting $\hat{\epsilon}$ value to generate targeted predictions under a shift, $\bar{Q}^*(A^d,W)$:
-$$
-\bar{Q}^*(A^d,W) = \text{logit}^{-1} \left[ \text{logit} (\bar{Q} (A^d, W)) + \hat{\epsilon} \right].
-$$
-1. With the updated estimates $\bar{Q}^*(A^d,W)$ in hand (after unscaling), define:
-$$
-\hat{\psi}_{\text{tmle}} = \frac{1}{n} \sum_{i=1}^n \bar{Q}^*(A^d,W).
-$$
-
-Using the empirical mean $\hat{Y} = \frac{1}{n} \sum_{i=1}^nY_i$, to estimate $\psi_0(A) = \mathbb{E}(Y)$, we obtain an estimate of the statistical association parameter $\psi_0^{\Delta} = \psi_0(A^d) = \psi_0(A)$ with
-$$
-\hat{\psi}^{\Delta} = \hat{\psi}_{\text{tmle}} - \bar{Y}.
-$$
-
-The $95\%$ Wald-style confidence interval $\hat{\psi}^{\Delta} \pm 1.96 \sqrt{Var(\hat{\psi}^{\Delta})}$ is obtained from the influence curve.
-
-Using 10-fold cross-validation, SL built the best weighted combination of predictions from the following algorithms: the empirical mean, generalized linear models (`glm`), generalized additive models (`gam`), extreme gradient boosting (`xgboost`), and the scalable highly adaptive lasso (`hal`).
-We considered the following tools (TODO: actual tools used):
-
-* `halfmoon` and `cobal` for covariate balance tables and plots
-* `tmle`, `ltmle` (Longitudinal Targeted Maximum Likelihood Estimation), `SuperLearner`
-* `stremr` (Streamlined Causal Inference for Static, Dynamic and Stochastic Regimes in Longitudinal Data)
-* `lmtp` (Non-parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies)
-* `Causal-curve`
-* `tlmixture`, `BKMR`, `BKMR-DLM`, `qgcomp`
-* `sensemakr` for sensitivity analysis.
-
 <!-- ####################################################################### -->
 # Step 5: Interpretation and sensitivity analyses to inform a substantive conclusion
 <!-- ####################################################################### -->
 
-* Highlight the limitations:
-  * When considering only one exposure, we do not consider the effect of the others on that exposure and the outcome
-  * When we consider only one outcome, we do not consider the effect of the other outcomes on that one
-* Although the interpretation of $\psi^{\text{causal}}$ is clear, how closely $\psi^{\text{stat}}$ matches it merits discussion. One considers the plausibility of each of the identifying assumptions in turn
+* Highlight the limitations.
+* Although the interpretation of $\psi^{\text{causal}}$ is clear, how closely $\psi^{\text{stat}}$ matches it merits discussion. One considers the plausibility of each of the identifying assumptions in turn.
 * An open question is whether the estimated treatment effect is biased due to confounding by unmeasured covariates. We can examine how the substantive conclusion would be impacted under a range of presumed causal bias, $\delta = \psi^{\text{causal}} - \psi^{\text{stat}}$. The exercise illustrates how the effect estimate, p-value, and confidence interval bounds change, depending on the magnitude and direction of the hypothesized gap.
 
 <!-- ####################################################################### -->
 # Appendix
 <!-- ####################################################################### -->
 
-* Checklist A: **Reproducibility**, table with random seed, names, description, and version numbers of all software packages
+* Checklist A: **Reproducibility**, table with random seed, names, description, and version numbers of all software packages.
 * Checklist B: **`xxx` package specifications**, table providing values for all non-data arguments, and brief rationale when departing from the default specification.
 
 ## DAGs
