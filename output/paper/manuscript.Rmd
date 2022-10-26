@@ -1,5 +1,5 @@
 ---
-title: "Paper 2"
+title: "Paper X"
 author:
   - Lorenzo Fabbri:
       correspondence: "yes"
