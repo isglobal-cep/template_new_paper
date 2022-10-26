@@ -1,11 +1,13 @@
 ---
 title: "Causal Roadmap"
-author:
+author: Lorenzo Fabbri
 output:
   bookdown::pdf_document2:
     number_sections: false
   html_document: default
 bibliography: references.bib
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -34,6 +36,10 @@ The study **population** was based on..., consisting of $\text{N}=$... Inclusion
 Measured **exposures** consisted of...
 
 The **primary outcome** was... **Secondary outcomes** included...
+
+<!-- ####################################################################### -->
+## Descriptive analyses
+<!-- ####################################################################### -->
 
 <!-- ####################################################################### -->
 # Step 1: Define a realistic statistical model
@@ -128,9 +134,23 @@ $$
 # Step 5: Interpretation and sensitivity analyses to inform a substantive conclusion
 <!-- ####################################################################### -->
 
-* Highlight the limitations.
+Highlight possible **limitations**:
+
+* When considering only one exposure, we do not consider the effect of the others on that exposure and the outcome;
+* When we consider only one outcome, we do not consider the effect of the other outcomes on that one;
 * Although the interpretation of $\psi^{\text{causal}}$ is clear, how closely $\psi^{\text{stat}}$ matches it merits discussion. One considers the plausibility of each of the identifying assumptions in turn.
-* An open question is whether the estimated treatment effect is biased due to confounding by unmeasured covariates. We can examine how the substantive conclusion would be impacted under a range of presumed causal bias, $\delta = \psi^{\text{causal}} - \psi^{\text{stat}}$. The exercise illustrates how the effect estimate, p-value, and confidence interval bounds change, depending on the magnitude and direction of the hypothesized gap.
+
+We performed **sensitivity analysis** to measure robustness to unmeasured confounders, based on the following considerations:
+
+* Broadly, an open question is whether the estimated treatment effect is biased due to confounding by unmeasured covariates. We can examine how the substantive conclusion would be impacted under a range of presumed causal bias, $\delta = \psi^{\text{causal}} - \psi^{\text{stat}}$. That is, how *strong* would a particular confounder (or group of confounders) have to be in order to change the conclusions of this study? In a worst case scenario, how vulnerable are the study's results to many or all unobserved confounders acting **together**, possibly non-linearly? The exercise illustrates how the effect estimates, and confidence interval bounds change, depending on the magnitude and direction of the hypothesized gap;
+* We implemented the following methods to conduct sensitivity analysis:
+  * Selection bias and stratification...
+  * Placebo treatment (replacement of the actual treatment with a random variable);
+  * We performed leave-1-out analyses to assess the influence of single subjects on the effect of interest.
+
+We took into consideration the following points to *validate* our results:
+
+* We evaluated whether the obtained results are of any relevance from a public health point of view.
 
 <!-- ####################################################################### -->
 # Appendix
@@ -140,9 +160,19 @@ $$
 
 Table with random seed, names, description, and version numbers of all software packages.
 
+| **Name** | **Version** | **Description** |
+|:---------|:------------|:----------------|
+| Random seed | NA | Will be set to $X$ |
+| `R` | `r I(paste0(R.version$major, ".", R.version$minor))` | Statistical programming environment |
+| ... | ... | ... |
+
 ## Checklist B1: `xxx` package specifications
 
 Table providing values for all non-data arguments, and brief rationale when departing from the default specification.
+
+| **Argument** | **Setting** | **Default** (Y/N) | **Comment** |
+|:-------------|:------------|:------------------|:------------|
+| ... | ... | ... | ... |
 
 ## DAGs
 
@@ -160,7 +190,8 @@ dag.rq1 <- dags$rq1 %>%
   dagitty::dagitty()
 dag.rq1 %>% ggdag::tidy_dagitty() %>%
   ggdag::ggdag_status(text_size = 10, text_col = "black") +
-  ggdag::theme_dag() + ggdag::scale_adjusted()
+  ggdag::theme_dag() + ggdag::scale_adjusted() +
+  ggplot2::theme(legend.text = ggplot2::element_text(size = 20))
 ```
 
 The `r I(type.mas)` sufficient adjustment sets for estimating the `r I(type.effect)` effect of X on Y are:
@@ -170,6 +201,9 @@ dagitty::adjustmentSets(x = dag.rq1,
                         type = type.mas, effect = type.effect)
 ```
 
+\newpage
+
 <!-- ####################################################################### -->
 # Bibliography
 <!-- ####################################################################### -->
+
