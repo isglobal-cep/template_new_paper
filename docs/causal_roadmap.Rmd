@@ -12,6 +12,13 @@ bibliography: references.bib
 library(tidyverse)
 ```
 
+```{r, echo=FALSE}
+# Type of adjustment set from DAG
+type.mas <- "minimal"
+# Type of effect to be estimated from DAG
+type.effect <- "direct"
+```
+
 
 \textcolor{red}{Most of the following was **copy-pasted** from published papers. Some of the Sections must be filled depending on the chosen causal framework.}
 
@@ -129,17 +136,21 @@ $$
 # Appendix
 <!-- ####################################################################### -->
 
-* Checklist A: **Reproducibility**, table with random seed, names, description, and version numbers of all software packages.
-* Checklist B: **`xxx` package specifications**, table providing values for all non-data arguments, and brief rationale when departing from the default specification.
+## Checklist A: Reproducibility
+
+Table with random seed, names, description, and version numbers of all software packages.
+
+## Checklist B1: `xxx` package specifications
+
+Table providing values for all non-data arguments, and brief rationale when departing from the default specification.
 
 ## DAGs
 
 ```{r, echo=FALSE}
 source("../DAGs/dag_v1.R")
 source("../code/dags.R")
+
 dags <- dag.v1()
-type.mas <- "minimal"
-type.effect <- "direct"
 ```
 
 ### Research question 1:...
@@ -148,7 +159,7 @@ type.effect <- "direct"
 dag.rq1 <- dags$rq1 %>%
   dagitty::dagitty()
 dag.rq1 %>% ggdag::tidy_dagitty() %>%
-  ggdag::ggdag_status(text_size = 3, text_col = "black") +
+  ggdag::ggdag_status(text_size = 10, text_col = "black") +
   ggdag::theme_dag() + ggdag::scale_adjusted()
 ```
 
