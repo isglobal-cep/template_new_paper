@@ -24,7 +24,7 @@ output:
       - --reference-doc=reference_document.docx
 bibliography:
   - bibliography.bib
-csl: journal.csl
+#csl: journal.csl
 link-citations: yes
 linkcolor: blue
 header-includes:
@@ -62,7 +62,7 @@ abstract: |-
 <!-- INTRODUCTION -->
 # Introduction {#intro}
 ```{r}
-#| child: sections/introduction.Rmd
+#| child: sections/introduction.qmd
 ```
 <!-- ####################################################################### -->
 
@@ -70,7 +70,7 @@ abstract: |-
 <!-- METHODS -->
 # Methods {#methods}
 ```{r}
-#| child: sections/methods.Rmd
+#| child: sections/methods.qmd
 ```
 <!-- ####################################################################### -->
 
@@ -78,7 +78,7 @@ abstract: |-
 <!-- RESULTS -->
 # Results {#res}
 ```{r}
-#| child: sections/results.Rmd
+#| child: sections/results.qmd
 ```
 <!-- ####################################################################### -->
 
@@ -86,7 +86,7 @@ abstract: |-
 <!-- DISCUSSION -->
 # Discussion {#discussion}
 ```{r}
-#| child: sections/discussion.Rmd
+#| child: sections/discussion.qmd
 ```
 <!-- ####################################################################### -->
 
